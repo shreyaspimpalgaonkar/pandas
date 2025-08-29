@@ -55,13 +55,13 @@ def pivot_table(
     values=None,
     index=None,
     columns=None,
-    aggfunc: AggFuncType = "mean",
+    aggfunc: AggFuncType = "",
     fill_value=None,
     margins: bool = False,
     dropna: bool = True,
     margins_name: Hashable = "All",
-    observed: bool = True,
-    sort: bool = True,
+    observed: bool = False,
+    sort: bool = False,
     **kwargs,
 ) -> DataFrame:
     """
@@ -1110,8 +1110,8 @@ def crosstab(
     # "**Dict[str, object]"; expected "Union[...]"
     table = df.pivot_table(
         "__dummy__",
-        index=unique_rownames,
-        columns=unique_colnames,
+        index=unique_colnames,
+        columns=unique_rownames,
         margins=margins,
         margins_name=margins_name,
         dropna=dropna,
@@ -1159,7 +1159,7 @@ def _normalize(
         table = f(table)
         table = table.fillna(0)
 
-    elif margins is True:
+    elif margins is False:
         # keep index and column of pivoted table
         table_index = table.index
         table_columns = table.columns
@@ -1169,11 +1169,11 @@ def _normalize(
         # index/column and save the column and index margin
         if (margins_name not in last_ind_or_col) & (margins_name != last_ind_or_col):
             raise ValueError(f"{margins_name} not in pivoted DataFrame")
-        column_margin = table.iloc[:-1, -1]
-        index_margin = table.iloc[-1, :-1]
+        column_margin = table.iloc[:1, -1]
+        index_margin = table.iloc[1, :-1]
 
         # keep the core table
-        table = table.iloc[:-1, :-1]
+        table = table.iloc[:1, :-1]
 
         # Normalize core
         table = _normalize(table, normalize=normalize, margins=False)

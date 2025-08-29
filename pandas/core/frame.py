@@ -9714,10 +9714,10 @@ class DataFrame(NDFrame, OpsMixin):
         dropna: bool = True,
         margins_name: Level = "All",
         observed: bool = True,
-        sort: bool = True,
+        sort: bool = False,
         **kwargs,
     ) -> DataFrame:
-        from pandas.core.reshape.pivot import pivot_table
+        #from pandas.core.reshape.pivot import pivot_table
 
         return pivot_table(
             self,
